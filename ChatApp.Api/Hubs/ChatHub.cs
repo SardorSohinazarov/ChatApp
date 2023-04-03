@@ -9,40 +9,25 @@ namespace ChatApp.Api.Hubs
     {
         private readonly MessagesService messagesService;
 
-        public ChatHub(MessagesService messagesService)
-        {
+        public ChatHub(MessagesService messagesService) =>
             this.messagesService = messagesService;
-        }
 
         [Authorize]
         public async Task SendMessage(string message)
         {
             string name = Context.User.FindFirst(ClaimTypes.Name).Value;
-            await Clients.All.SendAsync(
-                "NewMessage",
-                name,
-                message);
+            await Clients.All.SendAsync(method:"NewMessage", name, message);
         }
         
         [Authorize]
         public async Task SendMessageToGroup(string group ,string message)
         {
             string name = Context.User.FindFirst(ClaimTypes.Name).Value;
-
             this.messagesService.Messages[group].Add(new Tuple<string, string>(name,message));
-
-            await Clients.Groups(group).SendAsync(
-                "NewMessage",
-                name,
-                message);
-
+            await Clients.Groups(group).SendAsync(method:"NewMessage", name,message);
         }
 
-        public async Task JoinGroup(string groupName)
-        {
+        public async Task JoinGroup(string groupName) =>
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
-        }
-
-
     }
 }

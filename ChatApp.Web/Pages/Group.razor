@@ -3,7 +3,6 @@
 @using Microsoft.AspNetCore.SignalR.Client;
 <h3>sardor in @GroupName Group</h3>
 
-
 @foreach (var _message in messages)
 {
     <p>@_message</p>
@@ -32,7 +31,8 @@
         await hubConnection.StartAsync();
         await hubConnection.InvokeAsync("JoinGroup", GroupName);
 
-        messages = await Http.GetFromJsonAsync<List<string>>($"https://localhost:7183/api/Account/groups/{GroupName}");
+        messages = await Http.GetFromJsonAsync<List<string>>(
+            $"https://localhost:7183/api/Account/groups/{GroupName}");
     }
 
     private void GetMessage(string id, string message)
@@ -46,7 +46,10 @@
     {
         if (hubConnection.State == HubConnectionState.Connected)
         {
-            await hubConnection.InvokeAsync("SendMessageToGroup",GroupName, message ?? "...");
+            await hubConnection.InvokeAsync(
+                methodName:"SendMessageToGroup",
+                GroupName, 
+                message ?? "...Empty message...");
         }
     }   
 }

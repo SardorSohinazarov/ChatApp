@@ -26,7 +26,6 @@ builder.Services.AddCors(cors =>
 
 builder.Services.AddSingleton<MessagesService>();
 
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

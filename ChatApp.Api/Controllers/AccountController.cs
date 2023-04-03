@@ -19,7 +19,6 @@ namespace ChatApp.Api.Controllers
         public async Task<IActionResult> Login(string username)
         {
             var user = new IdentityUser(username);
-
             await this.signInManager.SignInAsync(user, isPersistent: true);
 
             return Ok();
@@ -30,14 +29,13 @@ namespace ChatApp.Api.Controllers
         public IActionResult GetProfile() =>
             Ok($"Username : {User.FindFirst(ClaimTypes.Name)?.Value}");
 
-        //[Authorize]
         [HttpGet("groups")]
         public IActionResult GetGroups() => 
-            Ok(new List<string>() {
-                "Sinfdoshlar",
-                "Kursdoshlar",
-                "Hamkasblar"
-            });
+        Ok(new List<string>() {
+            "Sinfdoshlar",
+            "Kursdoshlar",
+            "Hamkasblar"
+        });
 
 
         [HttpGet("groups/{group}")]

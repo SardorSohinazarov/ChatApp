@@ -22,7 +22,6 @@
             .Build();
 
         hubConnection.On<string,string>("NewMessage", GetMessage);
-
         await hubConnection.StartAsync();
     }
 
@@ -36,7 +35,9 @@
     {
         if(hubConnection.State == HubConnectionState.Connected)
         {
-            await hubConnection.InvokeAsync(nameof(SendMessage), message ?? "...");
+            await hubConnection.InvokeAsync(
+                methodName:nameof(SendMessage), 
+                message ?? "...Empty Message...");
         }
     }
 }
