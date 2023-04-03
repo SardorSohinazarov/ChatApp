@@ -8,17 +8,11 @@
     <p>Empty</p>
 }
 else
+{
     @foreach(var group in _groups)
     {
         var groupLink = $"/groups/{group}";
         <MudLink Href="@groupLink">@group</MudLink>
         <br />
-    }
-
-@code {
-    private List<string> _groups = new List<string>();
-    protected override async Task OnInitializedAsync()
-    {
-        _groups = await Http.GetFromJsonAsync<List<string>>("https://localhost:7183/api/Account/groups");
     }
 }
