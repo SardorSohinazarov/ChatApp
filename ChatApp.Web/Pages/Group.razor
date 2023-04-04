@@ -1,7 +1,7 @@
 ﻿@page "/groups/{GroupName}"
 @inject HttpClient Http
 @using Microsoft.AspNetCore.SignalR.Client;
-<h3>sardor in @GroupName Group</h3>
+<h3>@UserName in @GroupName Group</h3>
 
 @foreach (var _message in messages)
 {
