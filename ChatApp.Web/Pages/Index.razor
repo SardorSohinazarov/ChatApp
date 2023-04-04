@@ -2,10 +2,98 @@
 @using Microsoft.AspNetCore.SignalR.Client;
 @inject HttpClient Http
 
-@foreach(var _message in messages)
-{
-    <p>@_message</p>
+@*Keyframes by https://animate.style/*@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+<style type="text/css">
+
+    .bounceIn {
+        opacity: 0;
+        animation-delay: 0.5s;
+        animation-duration: 0.5s;
+        animation-name: bounceIn;
+        animation-fill-mode: forwards;
+    }
+
+    .bounceOut {
+        animation-duration: 0.5s;
+        animation-name: bounceOut;
+        animation-fill-mode: forwards;
+    }
+
+    .backInDown {
+        opacity: 0;
+        animation-delay: 0.5s;
+        animation-duration: 0.5s;
+        animation-name: backInDown;
+        animation-fill-mode: forwards;
+    }
+
+    .backOutDown {
+        animation-duration: 0.5s;
+        animation-name: backOutDown;
+        animation-fill-mode: forwards;
+    }
+
+    .rotateIn {
+        opacity: 0;
+        animation-delay: 0.5s;
+        animation-duration: 0.5s;
+        animation-name: rotateIn;
+        animation-fill-mode: forwards;
+    }
+
+    .rotateOut {
+        animation-duration: 0.5s;
+        animation-name: rotateOut;
+        animation-fill-mode: forwards;
+    }
+</style>
+
+<MudCarousel Class="mud-width-full" Style="height:200px;" TData="object" AutoCycle="false">
+    <MudCarouselItem Color="@Color.Primary" Transition="transition">
+        <div class="d-flex" style="height:100%">
+            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
+        </div>
+    </MudCarouselItem>
+    <MudCarouselItem Color="@Color.Secondary" Transition="transition">
+        <div class="d-flex" style="height:100%">
+            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
+        </div>
+    </MudCarouselItem>
+    <MudCarouselItem Color="@Color.Tertiary" Transition="transition" CustomTransitionEnter="bounceIn" CustomTransitionExit="bounceOut">
+        <div class="d-flex" style="height:100%">
+            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
+        </div>
+    </MudCarouselItem>
+    <MudCarouselItem Transition="transition" CustomTransitionEnter="backInDown" CustomTransitionExit="backOutDown">
+        <div class="d-flex" style="background-color:lightgray; height:100%">
+            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Color="@Color.Primary" Size="@Size.Large" />
+        </div>
+    </MudCarouselItem>
+    <MudCarouselItem Transition="transition" CustomTransitionEnter="rotateIn" CustomTransitionExit="rotateOut">
+        <div class="d-flex" style="background-color:lightgray; height:100%">
+            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Color="@Color.Secondary" Size="@Size.Large" />
+        </div>
+    </MudCarouselItem>
+</MudCarousel>
+
+@code{
+    private Transition transition = Transition.Slide;
 }
 
-<MudTextField T="string" @bind-Value="message"></MudTextField>
-<MudButton OnClick="SendMessage">Send</MudButton>
+<MudText Class="animate__heartBeat" Typo="Typo.h1" Align="Align.Center" Color="Color.Primary">
+    Assalomu alaykum
+</MudText>
+
+<MudExpansionPanels>
+    <MudExpansionPanel Style="border:solid;color:lightskyblue;" Text="Bu qanday dastur">
+        Bu telegramdan ilhomlanilgan chat dasturi
+    </MudExpansionPanel>
+    <MudExpansionPanel Style="border:solid;color:lightskyblue;" Text="Men kimman?">
+        Men Sohinazarov Sardor .Net dasturchi
+        <MudImage Src="https://media.licdn.com/dms/image/D4D03AQHPCEhATjUSQw/profile-displayphoto-shrink_800_800/0/1677003135645?e=2147483647&v=beta&t=EpTentPFo1F8clY2k3kGguitu-xIFhhx9uTW3z8UOJI"></MudImage>
+    </MudExpansionPanel>
+    <MudExpansionPanel Style="border:solid;color:lightskyblue;" Text="Nima uchun bunaqa zo'r">
+        Chunki haqiqatdan kuchli dasturchimanda
+    </MudExpansionPanel>
+</MudExpansionPanels>

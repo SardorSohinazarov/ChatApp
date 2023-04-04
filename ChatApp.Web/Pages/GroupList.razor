@@ -12,7 +12,15 @@ else
     @foreach(var group in _groups)
     {
         var groupLink = $"/groups/{group}";
-        <MudLink Href="@groupLink">@group</MudLink>
+        <MudAlert NoIcon="true" Severity="Severity.Normal" Variant="Variant.Outlined" >
+            <MudAvatar Color="Color.Tertiary">
+                @group[0]
+            </MudAvatar>
+
+            <MudLink Href="@groupLink">
+                @group
+            </MudLink>
+        </MudAlert>
         <br />
     }
 }

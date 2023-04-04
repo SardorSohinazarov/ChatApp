@@ -1,13 +1,27 @@
 ﻿@page "/groups/{GroupName}"
 @inject HttpClient Http
 @using Microsoft.AspNetCore.SignalR.Client;
+@using static MudBlazor.CategoryTypes;
 <h3>@UserName in @GroupName Group</h3>
 
 @foreach (var _message in messages)
 {
-    <p>@_message</p>
+    <MudAvatar Color="Color.Success">
+        @_message[0]
+    </MudAvatar>
+
+    <MudChip Color="Color.Info" >
+        <MudText>
+            @_message[7..]
+        </MudText>
+    </MudChip>
     <br />
 }
 
-<MudTextField T="string" @bind-Value="message"></MudTextField>
-<MudButton OnClick="SendMessage">Send</MudButton>
+<br />
+
+<Row Style="display:flex">
+    
+    <MudTextField Style="width: 95%" Label="Write a message ..." Variant="Variant.Filled" Clearable="true" Immediate="true" T="string" @bind-Value="message"></MudTextField>
+    <MudIconButton Style="width:5%" Variant="Variant.Filled" Icon="@Icons.Material.Filled.Send" Color="Color.Primary" OnClick="SendMessage">Send</MudIconButton>
+</Row>
