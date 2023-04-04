@@ -1,3 +1,4 @@
+using ChatApp.Api.Data;
 using ChatApp.Api.Hubs;
 using ChatApp.Api.Services;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +11,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
+
+builder.Services.AddDbContext<ChatDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddDbContext<IdentityDbContext>(options =>
     options.UseInMemoryDatabase("ChatApp"));

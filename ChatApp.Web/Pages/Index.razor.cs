@@ -1,11 +1,20 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+﻿using ChatApp.Web.Data;
+using ChatApp.Web.Models;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace ChatApp.Web.Pages
 {
     public partial class Index
     {
+        private readonly ChatDbContext _context;
+
+        public Index(ChatDbContext context)
+        {
+            _context = context;
+        }
+
         private string? message { get; set; }
-        private readonly List<string> messages = new List<string>();
+        private List<string>? messages = new List<string>();
         private HubConnection? hubConnection;
 
         protected override async Task OnInitializedAsync()
@@ -14,6 +23,8 @@ namespace ChatApp.Web.Pages
                 .WithUrl("https://localhost:7183/chathub")
                 .Build();
 
+            messages = _context.Messages.Select(message => $"{message.UserName}:{message.Text}").ToList();
+
             hubConnection.On<string, string>("NewMessage", GetMessage);
             await hubConnection.StartAsync();
         }
@@ -21,6 +32,12 @@ namespace ChatApp.Web.Pages
         private void GetMessage(string id, string message)
         {
             messages.Add($"{id}:{message}");
+            _context.Messages.Add(new Message
+            {
+                Text = message,
+                UserName = id,
+                ChatId = 0,
+            }) ;
             StateHasChanged();
         }
 
