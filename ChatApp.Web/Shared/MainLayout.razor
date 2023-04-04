@@ -8,23 +8,52 @@
     <MudAppBar Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudSpacer />
+
+        <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit" Size="Size.Large" Edge="Edge.Start" OnClick="@(() => ToggleDrawer())" />
+
         <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Link="https://mudblazor.com/" Target="_blank" />
         <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/MudBlazor/MudBlazor/" Target="_blank" />
     </MudAppBar>
+
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
         <MudDrawerHeader>
             <MudText Typo="Typo.h6">ChatApp.Web</MudText>
         </MudDrawerHeader>
         <NavMenu />
     </MudDrawer>
+
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
             @Body
         </MudContainer>
     </MudMainContent>
+
 </MudLayout>
 
+<MudDrawer Color="Color.Inherit" Width="20%" Height="100%" @bind-Open="@open" DisableOverlay="true" Elevation="1" Variant="@DrawerVariant.Temporary">
+    <MudDrawerHeader>
+        <MudText Typo="Typo.h4">My Account</MudText>
+    </MudDrawerHeader>
+    <MudNavMenu>
+        <MudNavLink Match="NavLinkMatch.All">My Name</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Album"><h2>New Group</h2></MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Album"><h2>New Channel</h2></MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Album"><h2>New Contacts</h2></MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Album"><h2>Calls</h2></MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Album"><h2>Saved Messages</h2></MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Album"><h2>Settings</h2></MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Album"><h2>Night Mode</h2></MudNavLink>
+    </MudNavMenu>
+</MudDrawer>
+
 @code {
+    bool open;
+
+    void ToggleDrawer()
+    {  
+        open = !open;
+    }
+
     bool _drawerOpen = true;
 
     void DrawerToggle()
