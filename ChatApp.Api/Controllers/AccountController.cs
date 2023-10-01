@@ -1,6 +1,5 @@
 ﻿using ChatApp.Api.Models;
 using ChatApp.Api.Models.DTOs;
-using ChatApp.Api.Services;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -85,14 +84,5 @@ namespace ChatApp.Api.Controllers
             "Kursdoshlar",
             "Hamkasblar"
         });
-
-
-        [HttpGet("groups/{group}")]
-        public IActionResult GetGroupMessages(
-            string group,
-            [FromServices] MessagesService messagesService)
-        {
-            return Ok(messagesService.Messages[group]);
-        }
     }
 }

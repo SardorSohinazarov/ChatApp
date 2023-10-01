@@ -6,15 +6,25 @@
 
 @foreach (var _message in messages)
 {
-    <MudAvatar Color="Color.Success">
-        @_message.SenderUserName[0]
-    </MudAvatar>
+    if(_message.SenderName == UserName)
+    {
+        <MudAvatar Color="Color.Success">
+            @_message.SenderName[0]
+        </MudAvatar>
+    }
+    else
+    {
+        <MudAvatar Color="Color.Info" Variant="Variant.Outlined">
+            @_message.SenderName[0]
+        </MudAvatar>
+    }
 
     <MudChip Color="Color.Info" >
         <MudText>
             @_message.Text
         </MudText>
     </MudChip>
+
     <br />
 }
 

@@ -1,9 +1,7 @@
 using ChatApp.Api.Data;
 using ChatApp.Api.Hubs;
 using ChatApp.Api.Models;
-using ChatApp.Api.Services;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using ChatApp.Api.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,8 +11,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 
+builder.Services.AddScoped<IMessageRepository,MessageRepository>();
+
 builder.Services.AddDbContext<ChatDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+    options
+    //.UseLazyLoadingProxies()
+    .UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 builder.Services.AddIdentity<ChatUser, UserRole>(options =>
 {
@@ -34,7 +36,6 @@ builder.Services.AddCors(cors =>
         .AllowAnyMethod()
         .AllowAnyOrigin()));
 
-builder.Services.AddSingleton<MessagesService>();
 
 var app = builder.Build();
 

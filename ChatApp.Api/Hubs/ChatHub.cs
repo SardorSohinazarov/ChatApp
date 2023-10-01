@@ -1,39 +1,35 @@
 ﻿using System.Security.Claims;
-using ChatApp.Api.Services;
-using Microsoft.AspNetCore.Authorization;
+using ChatApp.Api.Models;
+using ChatApp.Api.Repositories;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ChatApp.Api.Hubs
 {
     public class ChatHub: Hub
     {
-        private readonly MessagesService messagesService;
+        private readonly IMessageRepository _messageRepository;
 
-        public ChatHub(MessagesService messagesService) =>
-            this.messagesService = messagesService;
-
-        [Authorize]
-        public async Task SendMessage(string message)
+        public ChatHub(IMessageRepository messageRepository)
         {
-            string name = Context.User.FindFirst(ClaimTypes.Name).Value;
-            await Clients.All.SendAsync(method:"NewMessage", name, message);
+            _messageRepository = messageRepository;
         }
-        
-        [Authorize]
-        public async Task SendMessageToGroup(string group ,string message)
-        {
-            string name = Context.User.FindFirst(ClaimTypes.Name).Value;
 
-            var messageObject = new Models.Message
+        //[Authorize]
+        public async Task SendMessageToGroup(string groupLink ,string message)
+        {
+            string name = Context.User?.FindFirst(ClaimTypes.Name)?.Value;
+
+            var messageObject = new Message
             {
-                SenderUserName = name,
                 Text = message,
-                Id = 1
+                SenderName = name ?? "Unknown user",
+                ChatLink = groupLink,
             };
 
-            this.messagesService.Messages[group].Add(messageObject);
+            //aslida service bo'lishi kerak lekin erindim
+            await _messageRepository.Add(messageObject);
 
-            await Clients.Groups(group).SendAsync(method:"NewMessage",name,messageObject);
+            await Clients.Groups(groupLink).SendAsync(method:"NewMessage",name,messageObject);
         }
 
         public async Task JoinGroup(string groupName) =>
