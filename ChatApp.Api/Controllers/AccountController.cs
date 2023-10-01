@@ -43,8 +43,7 @@ namespace ChatApp.Api.Controllers
             string group,
             [FromServices] MessagesService messagesService)
         {
-            return Ok(messagesService.Messages[group]
-                .Select(tuple => $"{tuple.Item1}:{tuple.Item2}").ToList());
+            return Ok(messagesService.Messages[group]);
         }
     }
 }

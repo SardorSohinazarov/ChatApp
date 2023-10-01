@@ -1,13 +1,15 @@
-﻿namespace ChatApp.Api.Services
+﻿using ChatApp.Api.Models;
+
+namespace ChatApp.Api.Services
 {
     public class MessagesService
     {
-        public Dictionary<string, List<Tuple<string, string>>> Messages 
-            = new Dictionary<string, List<Tuple<string, string>>>()
+        public Dictionary<string, List<Message>> Messages 
+            = new Dictionary<string, List<Message>>()
             {
-                {"Sinfdoshlar", new List<Tuple<string, string>>()},
-                {"Kursdoshlar", new List<Tuple<string, string>>()},
-                {"Hamkasblar", new List<Tuple<string, string>>() } 
+                {"Sinfdoshlar", new List<Message>()},
+                {"Kursdoshlar", new List<Message>()},
+                {"Hamkasblar", new List<Message>() } 
             };
     }
 }

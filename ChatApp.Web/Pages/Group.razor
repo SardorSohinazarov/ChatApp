@@ -7,12 +7,12 @@
 @foreach (var _message in messages)
 {
     <MudAvatar Color="Color.Success">
-        @_message[0]
+        @_message.SenderUserName[0]
     </MudAvatar>
 
     <MudChip Color="Color.Info" >
         <MudText>
-            @_message[7..]
+            @_message.Text
         </MudText>
     </MudChip>
     <br />

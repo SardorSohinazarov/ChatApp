@@ -1,4 +1,4 @@
-﻿namespace ChatApp.Api.Models
+﻿namespace ChatApp.Web
 {
     public class Message
     {
