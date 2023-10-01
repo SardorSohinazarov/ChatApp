@@ -1,6 +1,7 @@
-﻿using System.Security.Claims;
+﻿using ChatApp.Api.Models;
+using ChatApp.Api.Models.DTOs;
 using ChatApp.Api.Services;
-using Microsoft.AspNetCore.Authorization;
+using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,24 +11,72 @@ namespace ChatApp.Api.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly SignInManager<IdentityUser> signInManager;
+        private readonly SignInManager<ChatUser> _signInManager;
+        private readonly UserManager<ChatUser> _userManager;
 
-        public AccountController(SignInManager<IdentityUser> signInManager) =>
-            this.signInManager = signInManager;
-
-        [HttpPost]
-        public async Task<IActionResult> Login(string username)
+        public AccountController(
+            SignInManager<ChatUser> signInManager, 
+            UserManager<ChatUser> userManager)
         {
-            var user = new IdentityUser(username);
-            await this.signInManager.SignInAsync(user, isPersistent: true);
+            _signInManager = signInManager;
+            _userManager = userManager;
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginUserDTO loginUserDTO)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var taskSignResult = await _signInManager.PasswordSignInAsync(loginUserDTO.UserName, loginUserDTO.Password, true, true);
+
+            if (!taskSignResult.Succeeded)
+            {
+                return BadRequest();
+            }
 
             return Ok();
         }
 
-        [Authorize]
+        [HttpPost("signup")]
+        public async Task<IActionResult> SignUp(RegisterUserDTO registerUserDTO)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var user = registerUserDTO.Adapt<ChatUser>();
+
+            var registeredUser = await _userManager.CreateAsync(user, registerUserDTO.Password);
+
+            if (!registeredUser.Succeeded)
+                return BadRequest();
+
+            await _signInManager.SignInAsync(user, true);
+
+            return Ok();
+        }
+
+
         [HttpGet]
-        public IActionResult GetProfile() =>
-            Ok($"Username : {User.FindFirst(ClaimTypes.Name)?.Value}");
+        public async Task<IActionResult> Get()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return Ok(user);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update(UpdateUserDTO updateUserDTO)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            user.UserName = updateUserDTO.UserName;
+            user.FirstName = updateUserDTO.FirstName;
+            user.LastName = updateUserDTO.LastName;
+
+            await _userManager.UpdateAsync(user);
+
+            return Ok();
+        }
 
         [HttpGet("groups")]
         public IActionResult GetGroups() => 
