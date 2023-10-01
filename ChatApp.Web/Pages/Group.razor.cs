@@ -11,7 +11,7 @@ namespace ChatApp.Web.Pages
 
         public string UserName { get; set; }
         private string? message { get; set; }
-        private List<string> messages = new List<string>();
+        private List<Message> messages = new List<Message>();
         private HubConnection? hubConnection;
 
         protected override async Task OnInitializedAsync()
@@ -20,17 +20,17 @@ namespace ChatApp.Web.Pages
                 .WithUrl("https://localhost:7183/chathub")
                 .Build();
 
-            hubConnection.On<string, string>("NewMessage", GetMessage);
+            hubConnection.On<string, Message>("NewMessage", GetMessage);
             await hubConnection.StartAsync();
             await hubConnection.InvokeAsync("JoinGroup", GroupName);
 
-            messages = await Http.GetFromJsonAsync<List<string>>(
+            messages = await Http.GetFromJsonAsync<List<Message>>(
                 $"https://localhost:7183/api/Account/groups/{GroupName}");
         }
 
-        private void GetMessage(string id, string message)
+        private void GetMessage(string id, Message message)
         {
-            messages.Add($"{id}:{message}");
+            messages.Add(message);
             UserName = id;
             StateHasChanged();
         }

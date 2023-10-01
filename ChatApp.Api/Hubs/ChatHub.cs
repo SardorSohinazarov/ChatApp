@@ -23,8 +23,17 @@ namespace ChatApp.Api.Hubs
         public async Task SendMessageToGroup(string group ,string message)
         {
             string name = Context.User.FindFirst(ClaimTypes.Name).Value;
-            this.messagesService.Messages[group].Add(new Tuple<string, string>(name,message));
-            await Clients.Groups(group).SendAsync(method:"NewMessage", name,message);
+
+            var messageObject = new Models.Message
+            {
+                SenderUserName = name,
+                Text = message,
+                Id = 1
+            };
+
+            this.messagesService.Messages[group].Add(messageObject);
+
+            await Clients.Groups(group).SendAsync(method:"NewMessage",name,messageObject);
         }
 
         public async Task JoinGroup(string groupName) =>
