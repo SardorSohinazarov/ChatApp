@@ -16,16 +16,23 @@ namespace ChatApp.Web.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            hubConnection = new HubConnectionBuilder()
-                .WithUrl("https://localhost:7183/chathub")
-                .Build();
+            try
+            {
+                hubConnection = new HubConnectionBuilder()
+                    .WithUrl("https://localhost:7183/chathub")
+                    .Build();
 
-            hubConnection.On<string, Message>("NewMessage", GetMessage);
-            await hubConnection.StartAsync();
-            await hubConnection.InvokeAsync("JoinGroup", GroupName);
+                hubConnection.On<string, Message>("NewMessage", GetMessage);
+                await hubConnection.StartAsync();
+                await hubConnection.InvokeAsync("JoinGroup", GroupName);
 
-            messages = await Http.GetFromJsonAsync<List<Message>>(
-                $"https://localhost:7183/api/Account/groups/{GroupName}");
+                messages = await Http.GetFromJsonAsync<List<Message>>(
+                    $"https://localhost:7183/api/Messages/groups/{GroupName}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private void GetMessage(string id, Message message)
@@ -39,6 +46,17 @@ namespace ChatApp.Web.Pages
         {
             if (hubConnection.State == HubConnectionState.Connected)
             {
+                await hubConnection.InvokeAsync(
+                    methodName: "SendMessageToGroup",
+                    GroupName,
+                    message ?? "...Empty message...");
+            }
+            else
+            {
+                hubConnection = new HubConnectionBuilder()
+                    .WithUrl("https://localhost:7183/chathub")
+                    .Build();
+
                 await hubConnection.InvokeAsync(
                     methodName: "SendMessageToGroup",
                     GroupName,

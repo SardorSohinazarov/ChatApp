@@ -8,7 +8,13 @@ namespace ChatApp.Api.Data
     {
         public ChatDbContext(DbContextOptions<ChatDbContext> options) : base(options)
         {
-            Database.Migrate();
+        }
+
+        public DbSet<Message> Messages { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
         }
     }
 }
