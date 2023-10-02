@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace ChatApp.Api.Models
 {
-   /* public class Chat
+    public class Chat
     {
-        public string ChatLink { get; set; }
-        public string Name { get; set; }
-        public DateTimeOffset CreatedDate { get; set; }
-    }*/
+        public Guid Id { get; set; }
+        public string UsersKeys { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+    }
 }

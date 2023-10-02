@@ -1,8 +1,9 @@
 ﻿using ChatApp.Api.Models;
 using ChatApp.Api.Models.DTOs;
-using Mapster;
+using ChatApp.Api.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Mapster;
 
 namespace ChatApp.Api.Controllers
 {
@@ -12,13 +13,16 @@ namespace ChatApp.Api.Controllers
     {
         private readonly SignInManager<ChatUser> _signInManager;
         private readonly UserManager<ChatUser> _userManager;
+        private readonly IUserRepository _userRepository;
 
         public AccountController(
-            SignInManager<ChatUser> signInManager, 
-            UserManager<ChatUser> userManager)
+            SignInManager<ChatUser> signInManager,
+            UserManager<ChatUser> userManager,
+            IUserRepository userRepository)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _userRepository = userRepository;
         }
 
         [HttpPost("login")]
@@ -34,7 +38,9 @@ namespace ChatApp.Api.Controllers
                 return BadRequest();
             }
 
-            return Ok();
+            var user = await _userRepository.GetByUserName(userName: loginUserDTO.UserName);
+
+            return Ok(user);
         }
 
         [HttpPost("signup")]
@@ -55,9 +61,8 @@ namespace ChatApp.Api.Controllers
             return Ok();
         }
 
-
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(Guid id)
         {
             var user = await _userManager.GetUserAsync(User);
             return Ok(user);
@@ -76,13 +81,5 @@ namespace ChatApp.Api.Controllers
 
             return Ok();
         }
-
-        [HttpGet("groups")]
-        public IActionResult GetGroups() => 
-        Ok(new List<string>() {
-            "Sinfdoshlar",
-            "Kursdoshlar",
-            "Hamkasblar"
-        });
     }
 }

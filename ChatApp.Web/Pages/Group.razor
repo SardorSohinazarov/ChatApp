@@ -31,7 +31,6 @@
 <br />
 
 <Row Style="display:flex">
-    
-    <MudTextField Style="width: 95%" Label="Write a message ..." Variant="Variant.Filled" Clearable="true" Immediate="true" T="string" @bind-Value="message"></MudTextField>
+    <MudTextField Style="width: 95%" Label="Write a message ..." Variant="Variant.Filled" Clearable="false" Immediate="true" T="string" @bind-Value="message"></MudTextField>
     <MudIconButton Style="width:5%" Variant="Variant.Filled" Icon="@Icons.Material.Filled.Send" Color="Color.Primary" OnClick="SendMessage">Send</MudIconButton>
 </Row>

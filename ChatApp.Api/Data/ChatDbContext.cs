@@ -6,15 +6,10 @@ namespace ChatApp.Api.Data
 {
     public class ChatDbContext : IdentityDbContext<ChatUser, UserRole, Guid>
     {
-        public ChatDbContext(DbContextOptions<ChatDbContext> options) : base(options)
-        {
-        }
+        public ChatDbContext(DbContextOptions<ChatDbContext> options) : base(options) { }
 
         public DbSet<Message> Messages { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-        }
+        public DbSet<Chat> Chats { get; set; }
+        public DbSet<ChatUser> AspNetUsers { get; set; }
     }
 }

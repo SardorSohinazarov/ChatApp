@@ -18,22 +18,11 @@ namespace ChatApp.Api.Controllers
         public async Task<IActionResult> GetAllByChatLink(string group)
         {
             var listOfMessages = await _messageRepository.GetAllByChatId(group);
+
             if (listOfMessages == null)
                 return NotFound();
-            return Ok(listOfMessages.ToList());
-        }
 
-        [HttpPost]
-        public async Task<IActionResult> AddAsync()
-        {
-            await _messageRepository.Add(
-                new Models.Message
-                {
-                    ChatLink = "Sinfdoshlar",
-                    Text = "QalesBro",
-                    SenderName = "Sardor"
-                });
-            return Ok();
+            return Ok(listOfMessages.ToList());
         }
     }
 }
