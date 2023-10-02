@@ -11,14 +11,14 @@ else
 {
     @foreach(var group in _groups)
     {
-        var groupLink = $"/groups/{group}";
+        var groupLink = $"/groups/{group.ChatLink}";
         <MudAlert NoIcon="true" Severity="Severity.Normal" Variant="Variant.Outlined" >
             <MudAvatar Color="Color.Tertiary">
-                @group[0]
+                @group.FirstName[0]
             </MudAvatar>
 
             <MudLink Href="@groupLink">
-                @group
+                @group.FirstName @group.LastName
             </MudLink>
         </MudAlert>
         <br />

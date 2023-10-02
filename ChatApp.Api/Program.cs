@@ -12,6 +12,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 
 builder.Services.AddScoped<IMessageRepository,MessageRepository>();
+builder.Services.AddScoped<IChatRepository,ChatRepository>();
+builder.Services.AddScoped<IUserRepository,UserRepository>();
 
 builder.Services.AddDbContext<ChatDbContext>(options =>
     options
@@ -28,14 +30,12 @@ builder.Services.AddIdentity<ChatUser, UserRole>(options =>
 })
     .AddEntityFrameworkStores<ChatDbContext>();
 
-
 builder.Services.AddCors(cors =>
     cors.AddDefaultPolicy(corsPolicy =>
         corsPolicy
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowAnyOrigin()));
-
 
 var app = builder.Build();
 

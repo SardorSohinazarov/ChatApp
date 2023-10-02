@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ChatApp.Api.Models
 {
@@ -9,5 +10,6 @@ namespace ChatApp.Api.Models
 
         public string SenderName { get; set; }
         public string ChatLink { get; set; }
+        public DateTime CreatedTime { get; set; } = DateTime.Now;
     }
 }
