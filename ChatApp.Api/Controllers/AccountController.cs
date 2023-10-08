@@ -62,7 +62,7 @@ namespace ChatApp.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> Get()
         {
             var user = await _userManager.GetUserAsync(User);
             return Ok(user);

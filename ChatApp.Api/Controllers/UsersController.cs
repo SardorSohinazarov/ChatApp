@@ -3,9 +3,11 @@ using ChatApp.Api.Models;
 using ChatApp.Api.Models.ViewModels;
 using ChatApp.Api.Repositories;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace ChatApp.Api.Controllers
 {
@@ -16,18 +18,17 @@ namespace ChatApp.Api.Controllers
         private readonly ChatDbContext _chatDbContext;
         private readonly UserManager<ChatUser> _userManager;
         private readonly IChatRepository _chatRepository;
-        private readonly IUserRepository _userRepository;
 
         public UsersController(
             UserManager<ChatUser> userManager,
             IChatRepository chatRepository,
             ChatDbContext chatDbContext,
-            IUserRepository userRepository)
+            IUserRepository userRepository
+            )
         {
             _userManager = userManager;
             _chatRepository = chatRepository;
             _chatDbContext = chatDbContext;
-            _userRepository = userRepository;
         }
 
         [HttpGet]
@@ -35,11 +36,12 @@ namespace ChatApp.Api.Controllers
         {
             var users = await _userManager.Users.ToListAsync();
             var userViewModels = users.Adapt<List<UserViewModel>>();
-            var user = await _userManager.GetUserAsync(User);
+            //var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             foreach (var userViewModel in userViewModels)
             {
-                userViewModel.ChatLink = await _chatRepository.GetChatLink(userViewModel.Id.ToString(), user?.Id.ToString());
+                userViewModel.ChatLink = await _chatRepository.GetChatLink(userViewModel.Id.ToString(), id);
             }
 
             return Ok(userViewModels);

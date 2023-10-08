@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using ChatApp.Api.Models;
 using ChatApp.Api.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ChatApp.Api.Hubs
@@ -14,7 +15,7 @@ namespace ChatApp.Api.Hubs
             _messageRepository = messageRepository;
         }
 
-        //[Authorize]
+        [Authorize]
         public async Task SendMessageToGroup(string groupLink ,string message)
         {
             string name = Context.User?.FindFirst(ClaimTypes.Name)?.Value;
