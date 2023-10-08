@@ -13,12 +13,5 @@ namespace ChatApp.Api.Controllers
         {
             _chatRepository = chatRepository;
         }
-
-        [HttpGet]
-        public async Task<IActionResult> GetChatLink(string user1Id,string user2Id)
-        {
-            var chatId = await _chatRepository.GetChatLink(user1Id,user2Id);
-            return Ok(chatId);
-        }
     }
 }

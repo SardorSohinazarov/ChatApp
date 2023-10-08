@@ -17,7 +17,7 @@ namespace ChatApp.Web.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            try
+            try 
             {
                 hubConnection = new HubConnectionBuilder()
                     .WithUrl("https://localhost:7183/chathub")
@@ -39,7 +39,7 @@ namespace ChatApp.Web.Pages
         private void GetMessage(string id, Message message)
         {
             messages.Add(message);
-            UserName = id;
+            UserName = id; 
             StateHasChanged();
         }
 

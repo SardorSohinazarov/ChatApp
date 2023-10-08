@@ -1,0 +1,26 @@
+﻿@* @page "/login"
+@using System.Text;
+@using ChatApp.Web.Models;
+@using Newtonsoft.Json;
+@using static System.Net.WebRequestMethods;
+<h3>Login</h3>
+@inject HttpClient Http;
+
+<Row>
+    <MudTextField Style="width: 95%" Label="Write a message ..." Variant="Variant.Filled" Clearable="false" Immediate="true" T="string" @bind-Value="userName"></MudTextField>
+</Row>
+<Row>
+    <MudTextField Style="width: 95%" Label="Write a message ..." Variant="Variant.Filled" Clearable="false" Immediate="true" T="string" @bind-Value="password"></MudTextField>
+</Row>
+<MudIconButton Style="width:5%" Variant="Variant.Filled" Icon="@Icons.Material.Filled.Send" Color="Color.Primary" OnClick="Login(userName,password)">Send</MudIconButton>
+
+@code {
+    private string? userName { get; set; }
+    private string? password { get; set; }
+
+    private EventCallback Login(string Username, string Password)
+    {
+        return new EventCallback();
+    }
+}
+ *@

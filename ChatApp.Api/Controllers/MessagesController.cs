@@ -22,7 +22,7 @@ namespace ChatApp.Api.Controllers
             if (listOfMessages == null)
                 return NotFound();
 
-            return Ok(listOfMessages.ToList());
+            return Ok( listOfMessages.ToList());
         }
     }
 }

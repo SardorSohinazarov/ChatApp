@@ -30,12 +30,16 @@ builder.Services.AddIdentity<ChatUser, UserRole>(options =>
 })
     .AddEntityFrameworkStores<ChatDbContext>();
 
+
 builder.Services.AddCors(cors =>
     cors.AddDefaultPolicy(corsPolicy =>
         corsPolicy
         .AllowAnyHeader()
         .AllowAnyMethod()
-        .AllowAnyOrigin()));
+        .WithOrigins("https://localhost:44398")
+        .AllowCredentials()
+        )
+    );
 
 var app = builder.Build();
 
