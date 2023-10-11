@@ -1,0 +1,36 @@
+﻿@page "/groups";
+@using ChatApp.Client.Models;
+@inject HttpClient Http;
+@using System.Security.Claims;
+
+<h3>GroupList</h3>
+
+@if(_groups is null)
+{
+    <p>Empty</p>
+}
+else
+{
+    @foreach(var group in _groups)
+    {
+        var groupLink = $"/groups/{group.ChatLink}";
+        <p>@groupLink</p>
+@*         
+            <MudLink Href="@groupLink">
+                @group.FirstName @group.LastName
+            </MudLink> *@
+        <br />
+    }
+}
+
+@code {
+    [CascadingParameter(Name = "AuthenticationState")]
+    public AuthenticationState _authenticationState { get; set; }
+
+    private List<User> _groups = new List<User>();
+    protected override async Task OnInitializedAsync()
+    {
+        Http.DefaultRequestHeaders.Add("Bearer", _authenticationState.Token);
+        _groups = await Http.GetFromJsonAsync<List<User>>("https://localhost:7183/api/Users");
+    }
+}

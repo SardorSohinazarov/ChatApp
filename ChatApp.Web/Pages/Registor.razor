@@ -1,0 +1,98 @@
+﻿@page "/register";
+
+@using ChatApp.Web.Models.DTOs;
+@using ChatApp.Web.States;
+@using Newtonsoft.Json;
+@inject NavigationManager navigationManager;
+@inject HttpClient httpClient;
+@inject IJSRuntime JSRuntime;
+
+<PageTitle>Register</PageTitle>
+
+<div class="container">
+    <div class="row">
+
+        <div class="col">
+
+            <h2>Chat Register</h2>
+            <hr />
+
+            <EditForm Model="registerDTO" OnValidSubmit="RegisterAsync">
+
+                <DataAnnotationsValidator />
+
+                @if (string.IsNullOrWhiteSpace(ErrorMessage))
+                {
+                    <p class="text-danger">@ErrorMessage</p>
+                }
+
+                <div class="mb-3">
+                    <InputText @bind-Value="registerDTO.UserName" DisplayName="Username" class="form-control" placeholder="Enter Username" />
+                    <ValidationMessage For="()=> registerDTO.UserName" />
+                </div>
+
+                <div class="mb-3">
+                    <InputText @bind-Value="registerDTO.FirstName" DisplayName="FirstName" class="form-control" placeholder="Enter FirstName" />
+                    <ValidationMessage For="()=> registerDTO.FirstName" />
+                </div>
+
+                <div class="mb-3">
+                    <InputText @bind-Value="registerDTO.LastName" DisplayName="LastName" class="form-control" placeholder="Enter LastName" />
+                    <ValidationMessage For="()=> registerDTO.LastName" />
+                </div>
+
+                <div class="mb-3">
+                    <InputText type="password" @bind-Value="registerDTO.Password" DisplayName="Password" class="form-control" placeholder="Enter Password" />
+                    <ValidationMessage For="()=> registerDTO.Password" />
+                </div>
+
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-success">Register</button>
+                    <NavLink href="/" class="btn btn-outline-primary float-end">Login</NavLink>
+                </div>
+
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    [CascadingParameter(Name = "AuthenticationState")]
+    public AuthenticationState AuthenticationState { get; set; }
+
+    private RegisterUserDTO registerDTO { get; set; } = new RegisterUserDTO();
+    private bool _isBusy = false;
+    private string? ErrorMessage = null;
+
+    private async Task RegisterAsync()
+    {
+        try
+        {
+            _isBusy = true;
+            var response = await httpClient.PostAsJsonAsync<RegisterUserDTO>("https://localhost:7183/api/Account/register", registerDTO);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var auth = JsonConvert.DeserializeObject<AuthResponseDTO>(content);
+
+                AuthenticationState.LoadState(auth);
+
+                var serialized = JsonConvert.SerializeObject(auth);
+                await JSRuntime.InvokeVoidAsync("window.setToStorage", AuthenticationState.AuthStoreKey, JsonConvert.SerializeObject(auth));
+                navigationManager.NavigateTo("/chat");
+            }
+            else
+            {
+                _isBusy = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            _isBusy = false;
+        }
+    }
+}

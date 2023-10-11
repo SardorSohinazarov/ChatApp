@@ -64,7 +64,7 @@ namespace ChatApp.Api.Controllers
             return new AuthResponseDTO
             {
                 Name = user.UserName,
-                Token = token
+                Token = token,
             };
         }
     }
