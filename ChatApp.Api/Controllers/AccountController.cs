@@ -1,9 +1,9 @@
-﻿using ChatApp.Api.Models;
-using ChatApp.Api.Models.DTOs;
-using ChatApp.Api.Repositories;
-using Microsoft.AspNetCore.Identity;
+﻿using ChatApp.Api.Data;
+using ChatApp.Api;
 using Microsoft.AspNetCore.Mvc;
-using Mapster;
+using Microsoft.EntityFrameworkCore;
+using ChatApp.Api.Models.DTOs;
+using ChatApp.Api.Models;
 
 namespace ChatApp.Api.Controllers
 {
@@ -11,75 +11,67 @@ namespace ChatApp.Api.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly SignInManager<ChatUser> _signInManager;
-        private readonly UserManager<ChatUser> _userManager;
-        private readonly IUserRepository _userRepository;
+        private readonly ChatDbContext _chatDbContext;
+        private readonly TokenService _tokenService;
 
-        public AccountController(
-            SignInManager<ChatUser> signInManager,
-            UserManager<ChatUser> userManager,
-            IUserRepository userRepository)
+        public AccountController(ChatDbContext chatDbContext, TokenService tokenService)
         {
-            _signInManager = signInManager;
-            _userManager = userManager;
-            _userRepository = userRepository;
+            _chatDbContext = chatDbContext;
+            _tokenService = tokenService;
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(RegisterUserDTO registerDTO, CancellationToken cancellationToken)
+        {
+            var userNameExists = await _chatDbContext.Users
+                .AsNoTracking()
+                .AnyAsync(user => user.UserName == registerDTO.UserName, cancellationToken);
+
+            if (userNameExists)
+                return BadRequest($"{nameof(registerDTO.UserName)} already exists");
+
+            var user = new User
+            {
+                UserName = registerDTO.UserName,
+                Password = registerDTO.Password,
+                FirstName = registerDTO.FirstName,
+                LastName = registerDTO.LastName,
+                PhoneNumber = registerDTO.PhoneNumber
+            };
+
+            await _chatDbContext.Users.AddAsync(user, cancellationToken);
+            await _chatDbContext.SaveChangesAsync(cancellationToken);
+
+            return Ok(GenerateJWT(user, cancellationToken));
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginUserDTO loginUserDTO)
+        public async Task<IActionResult> Login(LoginUserDTO loginDTO, CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
+            var user = await _chatDbContext.Users
+                .FirstOrDefaultAsync(user => user.Password == loginDTO.Password && user.UserName == loginDTO.UserName, cancellationToken);
 
-            var taskSignResult = await _signInManager.PasswordSignInAsync(loginUserDTO.UserName, loginUserDTO.Password, true, true);
+            if (user == null)
+                return BadRequest("Incorrect credentials");
 
-            if (!taskSignResult.Succeeded)
+            return Ok(GenerateJWT(user, cancellationToken));
+        }
+
+        private AuthResponseDTO GenerateJWT(User user, CancellationToken cancellationToken)
+        {
+            var token = _tokenService.GenerateJWT(user);
+
+            return new AuthResponseDTO
             {
-                return BadRequest();
-            }
-
-            var user = await _userRepository.GetByUserName(userName: loginUserDTO.UserName);
-
-            return Ok(user);
-        }
-
-        [HttpPost("signup")]
-        public async Task<IActionResult> SignUp(RegisterUserDTO registerUserDTO)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest();
-
-            var user = registerUserDTO.Adapt<ChatUser>();
-
-            var registeredUser = await _userManager.CreateAsync(user, registerUserDTO.Password);
-
-            if (!registeredUser.Succeeded)
-                return BadRequest();
-
-            await _signInManager.SignInAsync(user, true);
-
-            return Ok();
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            return Ok(user);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> Update(UpdateUserDTO updateUserDTO)
-        {
-            var user = await _userManager.GetUserAsync(User);
-
-            user.UserName = updateUserDTO.UserName;
-            user.FirstName = updateUserDTO.FirstName;
-            user.LastName = updateUserDTO.LastName;
-
-            await _userManager.UpdateAsync(user);
-
-            return Ok();
+                Name = user.UserName,
+                Token = token
+            };
         }
     }
+
+    public class AuthResponseDTO
+    {
+        public string Name { get; set; }
+        public string Token { get; set; }
+    };
 }

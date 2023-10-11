@@ -5,6 +5,6 @@ namespace ChatApp.Api.Repositories
 {
     public interface IUserRepository
     {
-        Task<ChatUser> GetByUserName(string userName);
+        Task<User> GetByUserName(string userName);
     }
 }

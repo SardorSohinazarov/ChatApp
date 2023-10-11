@@ -13,9 +13,9 @@ namespace ChatApp.Api.Repositories
             _context = context;
         }
 
-        public async Task<ChatUser> GetByUserName(string userName)
+        public async Task<User> GetByUserName(string userName)
         {
-            var user = await _context.AspNetUsers.FirstOrDefaultAsync(u => u.UserName == userName);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName);
 
             return user;
         }
