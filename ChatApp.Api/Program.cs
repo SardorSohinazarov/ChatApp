@@ -1,10 +1,21 @@
+using ChatApp.Api;
 using ChatApp.Api.Data;
 using ChatApp.Api.Hubs;
-using ChatApp.Api.Models;
 using ChatApp.Api.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+    options.TokenValidationParameters = TokenService.GetTokenValidationParameters(builder.Configuration));
+
+builder.Services.AddTransient<TokenService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -16,30 +27,29 @@ builder.Services.AddScoped<IChatRepository,ChatRepository>();
 builder.Services.AddScoped<IUserRepository,UserRepository>();
 
 builder.Services.AddDbContext<ChatDbContext>(options =>
-    options
-    //.UseLazyLoadingProxies()
-    .UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
-builder.Services.AddIdentity<ChatUser, UserRole>(options =>
+builder.Services.ConfigureSwaggerGen(c =>
 {
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequiredLength = 6;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireLowercase = false;
-    options.Password.RequireDigit = false;
-})
-    .AddEntityFrameworkStores<ChatDbContext>();
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Chat.Api",
+        Version = "v1"
+    });
+});
 
-
-builder.Services.AddCors(cors =>
-    cors.AddDefaultPolicy(corsPolicy =>
-        corsPolicy
-        .AllowAnyHeader()
-        .AllowAnyMethod()
-        .WithOrigins("https://localhost:44398")
-        .AllowCredentials()
-        )
-    );
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        name: "MyAllowSpecificOrigins",
+        configurePolicy: configurePolicy =>
+        {
+            configurePolicy
+                .AllowAnyHeader()
+                .AllowAnyOrigin()
+                .AllowAnyMethod();
+        });
+});
 
 var app = builder.Build();
 
@@ -49,7 +59,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors();
+app.UseCors("MyAllowSpecificOrigins");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

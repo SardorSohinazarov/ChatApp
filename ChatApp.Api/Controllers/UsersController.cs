@@ -1,12 +1,11 @@
 ﻿using ChatApp.Api.Data;
-using ChatApp.Api.Models;
 using ChatApp.Api.Models.ViewModels;
 using ChatApp.Api.Repositories;
 using Mapster;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace ChatApp.Api.Controllers
@@ -16,17 +15,13 @@ namespace ChatApp.Api.Controllers
     public class UsersController : ControllerBase
     {
         private readonly ChatDbContext _chatDbContext;
-        private readonly UserManager<ChatUser> _userManager;
         private readonly IChatRepository _chatRepository;
 
         public UsersController(
-            UserManager<ChatUser> userManager,
             IChatRepository chatRepository,
-            ChatDbContext chatDbContext,
-            IUserRepository userRepository
+            ChatDbContext chatDbContext
             )
         {
-            _userManager = userManager;
             _chatRepository = chatRepository;
             _chatDbContext = chatDbContext;
         }
@@ -34,23 +29,28 @@ namespace ChatApp.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var users = await _userManager.Users.ToListAsync();
+            var users = await _chatDbContext.Users.ToListAsync();
             var userViewModels = users.Adapt<List<UserViewModel>>();
-            //var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            string jwtToken = HttpContext.Request.Headers[HeaderNames.Authorization];
+
+            // Parse the JWT token
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtTokenObject = tokenHandler.ReadJwtToken(jwtToken[7..]);
+            var id = jwtTokenObject.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
 
             foreach (var userViewModel in userViewModels)
             {
                 userViewModel.ChatLink = await _chatRepository.GetChatLink(userViewModel.Id.ToString(), id);
             }
 
-            return Ok(userViewModels);
+            return Ok(userViewModels.Where(x => x.Id.ToString() != id));
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string userName)
         {
-            var user = _chatDbContext.AspNetUsers.FirstOrDefault(u => u.UserName == userName);
+            var user = _chatDbContext.Users.FirstOrDefault(u => u.UserName == userName);
 
             return Ok(user);
         }
