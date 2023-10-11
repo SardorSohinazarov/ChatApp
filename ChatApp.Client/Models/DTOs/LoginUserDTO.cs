@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ChatApp.Web.Models
+namespace ChatApp.Client.Models.DTOs
 {
-    public class LoginDTO
+    public class LoginUserDTO
     {
         [Required]
         public string? UserName { get; set; }

@@ -1,0 +1,58 @@
+﻿@using ChatApp.Client.Models.DTOs;
+@using Newtonsoft.Json;
+@using ChatApp.Client;
+@using System.ComponentModel;
+@inherits LayoutComponentBase;
+@inject NavigationManager NavigationManager;
+@inject IJSRuntime JsRuntime;
+@implements IDisposable;
+
+<CascadingValue Value="AuthenticationState" Name="AuthenticationState">
+    <div class="container-fluid">
+        @Body
+    </div>
+</CascadingValue>
+
+@code {
+    // NOTE: Ideally it should be used a separate service class, register it as singleton service
+    // and then inject it on all the pages an components which need this AuthenticationState
+    //  I have used is as Cascading Parameter to simply show how CascadingParameters work
+    public AuthenticationState AuthenticationState { get; set; } = new();
+
+    protected async override Task OnInitializedAsync()
+    {
+        var authStateJson = await JsRuntime.InvokeAsync<string>("window.getFromStorage", AuthenticationState.AuthStoreKey);
+        if (!string.IsNullOrWhiteSpace(authStateJson))
+        {
+            var authState = JsonConvert.DeserializeObject<AuthResponseDTO>(authStateJson);
+            AuthenticationState.LoadState(authState);
+
+            if (AuthenticationState.IsAuthenticated)
+            {
+                NavigationManager.NavigateTo("/groups");
+            }
+        }
+
+        AuthenticationState.PropertyChanged += AuthenticationStateChanged;
+    }
+
+    private void AuthenticationStateChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(AuthenticationState.IsAuthenticated))
+        {
+            if (AuthenticationState.IsAuthenticated)
+            {
+                NavigationManager.NavigateTo("/groups");
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/");
+            }
+        }
+    }
+
+    public void Dispose()
+    {
+        AuthenticationState.PropertyChanged -= AuthenticationStateChanged;
+    }
+}

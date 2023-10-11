@@ -1,4 +1,4 @@
-﻿namespace ChatApp.Web.Models
+﻿namespace ChatApp.Client.Models.DTOs
 {
     public class RegisterUserDTO
     {

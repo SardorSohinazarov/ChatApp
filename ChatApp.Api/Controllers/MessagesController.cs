@@ -5,7 +5,7 @@ namespace ChatApp.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MessagesController : ControllerBase
+    public class MessagesController : BaseController
     {
         private readonly IMessageRepository _messageRepository;
 

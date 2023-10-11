@@ -55,7 +55,10 @@ namespace ChatApp.Api
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.FirstName),
+                new Claim("FirstName", user.FirstName),
+                new Claim("LastName", user.LastName),
+                new Claim("PhoneNumber", user.PhoneNumber),
+                new Claim("UserName", user.UserName),
             };
 
             if (additionalClaims?.Any() == true)

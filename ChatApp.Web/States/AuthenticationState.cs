@@ -1,4 +1,4 @@
-﻿using ChatApp.Web.Models;
+﻿using ChatApp.Web.Models.DTOs;
 using System.ComponentModel;
 
 namespace ChatApp.Web.States
