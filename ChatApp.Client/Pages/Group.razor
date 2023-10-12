@@ -4,6 +4,19 @@
 @using ChatApp.Client.Models;
 <h3>Group</h3>
 
+@foreach(var message in messages)
+{
+    <p>@message.Text</p>
+    <br />
+}
+
+<div style="display: flex">
+    <input type="text" class="form-control" style="width: 95%" placeholder="Write a message..." @bind="message" />
+    <button class="btn btn-primary" style="width: 5%" @onclick="SendMessage">
+        <span class="oi oi-send"></span> Send
+    </button>
+</div>
+
 
 @* @foreach (var _message in messages)
 {
@@ -62,8 +75,9 @@
             await hubConnection.StartAsync();
             await hubConnection.InvokeAsync("JoinGroup", GroupName);
 
-            messages = await Http.GetFromJsonAsync<List<Message>>(
-                $"https://localhost:7183/api/Messages/groups/{GroupName}");
+            messages = await Http.GetFromJsonAsync<List<Message>>($"https://localhost:7183/api/Messages/groups/{GroupName}");
+
+            StateHasChanged();
         }
         catch (Exception ex)
         {
