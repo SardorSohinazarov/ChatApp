@@ -31,7 +31,6 @@
         }
         else
         {
-
             try
             {
                 string token = _authenticationState.Token;
@@ -46,7 +45,7 @@
                     _groups = listOfGroups;
                 }
 
-
+                StateHasChanged();
             }
             catch (Exception ex)
             {
