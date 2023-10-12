@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace ChatApp.Api.Hubs
 {
+    [Authorize]
     public class ChatHub: Hub
     {
         private readonly IMessageRepository _messageRepository;

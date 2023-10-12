@@ -2,6 +2,8 @@
 @using ChatApp.Client.Models;
 @inject HttpClient Http;
 @using System.Security.Claims;
+@using System.Net.Http.Headers;
+@inject NavigationManager NavigationManager;
 
 <h3>GroupList</h3>
 
@@ -14,11 +16,11 @@ else
     @foreach(var group in _groups)
     {
         var groupLink = $"/groups/{group.ChatLink}";
-        <p>@groupLink</p>
-@*         
-            <MudLink Href="@groupLink">
-                @group.FirstName @group.LastName
-            </MudLink> *@
+            <p>
+                <a href=@groupLink class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
+                    @group.FirstName
+                </a>
+            </p>
         <br />
     }
 }
@@ -28,9 +30,40 @@ else
     public AuthenticationState _authenticationState { get; set; }
 
     private List<User> _groups = new List<User>();
-    protected override async Task OnInitializedAsync()
+
+    protected override async void OnInitialized()
     {
-        Http.DefaultRequestHeaders.Add("Bearer", _authenticationState.Token);
-        _groups = await Http.GetFromJsonAsync<List<User>>("https://localhost:7183/api/Users");
+        base.OnInitialized();
+        if (!_authenticationState.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+
+        try
+        {
+            string token = _authenticationState.Token;
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var groupsTask = Http.GetFromJsonAsync<List<User>>("https://localhost:7183/api/Users");
+
+            var listOfGroups = await groupsTask;
+
+            if(listOfGroups is not null)
+            {
+                _groups = listOfGroups;
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading user groups: {ex.Message}");
+        }
     }
+
+    private HttpClient GetClient()
+    {
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authenticationState.Token);
+        return Http;
+    }
+
 }
