@@ -11,7 +11,10 @@
 @foreach(var group in _groups)
 {
     var groupLink = $"/groups/{group.ChatLink}";
-        <p>@group.FirstName @group.LastName</p>
+    
+        <a href="@groupLink">
+            <p>@group.FirstName @group.LastName</p>
+        </a>
     <br />
 }
 
