@@ -35,7 +35,8 @@ namespace ChatApp.Api.Controllers
                 userViewModel.ChatLink = await _chatRepository.GetChatLink(userViewModel.Id.ToString(), id);
             }
 
-            return Ok(userViewModels.Where(x => x.Id.ToString() != id));
+            var listOfUsers = userViewModels.Where(x => x.Id.ToString() != id).ToList();
+            return Ok(listOfUsers);
         }
 
         [HttpGet("{userName}")]
