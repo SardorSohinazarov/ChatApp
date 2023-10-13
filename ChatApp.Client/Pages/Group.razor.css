@@ -1,0 +1,40 @@
+﻿.page {
+    background-color: #282E33;
+}
+
+.group-page {
+    height: calc(100vh - 100px);
+    overflow-y: auto;
+    background-color: transparent;
+}
+
+.message-style {
+    max-width: 60%;
+    padding: 4px 10px;
+    border-radius: 15px 15px 15px 0;
+    display: inline-flex;
+    background-color: #33393F;
+    color:white;
+}
+
+.messages-container {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: #18191D;
+}
+
+.text-area-style{
+    background-color:transparent;
+}
+
+.send-icon{
+    width: 25px;
+}
+
+.avatar{
+    border-radius:50%;
+    width:30px;
+    height:30px;
+    background-color: aquamarine;
+}
