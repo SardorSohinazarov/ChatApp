@@ -6,17 +6,40 @@
 @using ChatApp.Client.Models.ViewModels;
 @inject NavigationManager NavigationManager;
 
-<h3>GroupList</h3>
+<body class="groupList-page">
+    <h3 class="text-center text-white">GroupList</h3>
 
-@foreach(var group in _groups)
-{
-    var groupLink = $"/groups/{group.ChatLink}";
-    
-        <a href="@groupLink">
-            <p>@group.FirstName @group.LastName</p>
-        </a>
-    <br />
-}
+    <table class="table container">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Username</th>
+                <th scope="col">Phone number</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var group in _groups)
+            {
+            var groupLink = $"/groups/{group.ChatLink}";
+                        
+            <tr>
+                <td>
+                    <a href="@groupLink">
+                        @group.FirstName @group.LastName
+                    </a>
+                </td>
+                <td>
+                    @group.UserName
+
+                </td>
+                <td>
+                    @group.PhoneNumber
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</body>
 
 @code {
     [CascadingParameter(Name = "AuthenticationState")]

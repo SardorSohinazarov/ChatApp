@@ -9,50 +9,52 @@
 
 <div class="container">
     <div class="row">
-
-        <div class="col">
-
-            <h2>Chat Login</h2>
-            <hr />
-
+        <div class="col-lg-4 col-md-3 col-sm-2"></div>
+        <div class="col-lg-4 col-md-6 col-sm-8">
             <EditForm Model="loginDTO" OnValidSubmit="LoginAsync">
+                <div class="card br-0 mt-5">
+                    <div class="card-header bg-main br-0">
+                        <h2 class="text-white mb-0">Blazing Chat - Login</h2>
+                    </div>
+                    <div class="card-body">
+                        <DataAnnotationsValidator />
+                        @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+                        {
+                            <p class="text-danger">@ErrorMessage</p>
+                        }
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <InputText @bind-Value="loginDTO.UserName" DisplayName="Username" class="form-control" placeholder="Enter username" />
+                            <ValidationMessage For="() => loginDTO.UserName" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <InputText type="password" @bind-Value="loginDTO.Password" DisplayName="Password" class="form-control" placeholder="Enter password" />
+                            <ValidationMessage For="() => loginDTO.Password" />
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <NavLink href="register" class="btn btn-outline-primary float-start">Register</NavLink>
 
-                <DataAnnotationsValidator />
+                        @if (_isBusy)
+                        {
+                            <button class="btn btn-success float-end" type="button" disabled>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Loading...
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-success float-end">Login</button>
+                        }
 
-                @if (string.IsNullOrWhiteSpace(ErrorMessage))
-                {
-                    <p class="text-danger">@ErrorMessage</p>
-                }
 
-                <div class="mb-3">
-                    <InputText @bind-Value="loginDTO.UserName" DisplayName="Username" class="form-control" placeholder="Enter Username" />
-                    <ValidationMessage For="()=> loginDTO.UserName" />
+                        <div class="clearfix"></div>
+                    </div>
                 </div>
-
-                <div class="mb-3">
-                    <InputText type="password" @bind-Value="loginDTO.Password" DisplayName="Password" class="form-control" placeholder="Enter Password" />
-                    <ValidationMessage For="()=> loginDTO.Password" />
-                </div>
-
-                <div class="mb-3">
-                    @if (_isBusy)
-                    {
-                        <button class="btn btn-success" type="button" disabled>
-                            <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span>
-                            <span role="status">Loading...</span>
-                        </button>
-                    }
-                    else
-                    {
-                        <button type="submit" class="btn btn-success">
-                            Login
-                        </button>
-                    }
-                    <NavLink href="register" class="btn btn-outline-primary float-end">Register</NavLink>
-                </div>
-
             </EditForm>
         </div>
+        <div class="col-lg-4 col-md-3 col-sm-2"></div>
     </div>
 </div>
 
