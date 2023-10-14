@@ -63,6 +63,8 @@
 
             messages = await Http.GetFromJsonAsync<List<Message>>($"https://localhost:7183/api/Messages/groups/{GroupName}");
 
+            await jsruntime.InvokeVoidAsync("scrollFunction");
+
             StateHasChanged();
         }
         catch (Exception ex)
@@ -86,6 +88,8 @@
                 methodName: "SendMessageToGroup",
                 GroupName,
                 message ?? "...Empty message...");
+
+                message = "";
 
             await jsruntime.InvokeVoidAsync("scrollFunction");
         }
