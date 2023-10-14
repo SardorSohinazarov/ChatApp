@@ -1,5 +1,6 @@
 ﻿@page "/groups/{GroupName}"
 @inject HttpClient Http
+@inject IJSRuntime jsruntime;
 @using Microsoft.AspNetCore.SignalR.Client;
 @using ChatApp.Client.Models;
 
@@ -8,8 +9,8 @@
 
     <div class="messages-container">
 
-        <div class="group-page">
-            @foreach(var message in messages)
+        <div class="items-container">
+            @foreach (var message in messages)
             {
                 <div class="message-style text-break">
                     @message.Text
@@ -20,14 +21,18 @@
             }
         </div>
 
+       
+           
+       <div class="d-flex action-container">
+            <input type="text" class="form-control text-area-style" placeholder="Write a message..." aria-label="Write a message..." aria-describedby="button-send" @bind="message">
+            <button class="btn btn-outline-secondary" type="button" id="button-send" @onclick="SendMessage">
+                <img class="send-icon" src="icons/send-icon.png" />
+            </button>
+       </div>
+
     </div>
 
-    <div class="input-group mb-3 container py-2">
-        <input type="text" class="form-control text-area-style" placeholder="Write a message..." aria-label="Write a message..." aria-describedby="button-send" @bind="message">
-        <button class="btn btn-outline-secondary" type="button" id="button-send" @onclick="SendMessage">
-            <img class="send-icon" src="icons/send-icon.png" />
-        </button>
-    </div>
+
 </body>
 
 @code {
@@ -58,6 +63,8 @@
 
             messages = await Http.GetFromJsonAsync<List<Message>>($"https://localhost:7183/api/Messages/groups/{GroupName}");
 
+            await jsruntime.InvokeVoidAsync("scrollFunction");
+
             StateHasChanged();
         }
         catch (Exception ex)
@@ -81,6 +88,10 @@
                 methodName: "SendMessageToGroup",
                 GroupName,
                 message ?? "...Empty message...");
+
+                message = "";
+
+            await jsruntime.InvokeVoidAsync("scrollFunction");
         }
         else
         {

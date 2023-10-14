@@ -22,10 +22,14 @@
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-color: #18191D;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
 }
 
 .text-area-style{
     background-color:transparent;
+    color:white
 }
 
 .send-icon{
@@ -37,4 +41,15 @@
     width:30px;
     height:30px;
     background-color: aquamarine;
+}
+
+/*items-container*/
+
+.items-container{
+    height:96vh;
+    overflow-y:scroll;
+}
+
+.action-container{
+   
 }

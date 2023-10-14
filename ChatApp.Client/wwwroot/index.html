@@ -25,3 +25,14 @@
 </body>
 
 </html>
+
+<script>
+    function scrollFunction() {
+        const item = document.querySelector(".items-container")
+        item.scrollTop = item.scrollHeight - item.clientHeight
+
+        setTimeout(() => {
+            item.scrollTop = item.scrollHeight - item.clientHeight
+        },10)
+    }
+</script>
