@@ -5,7 +5,9 @@
 @using ChatApp.Client.Models;
 
 <body class="page container">
-    <h3 class="text-white">@GroupName</h3>
+    <div class="group-head row">
+        <h3 class="text-white">@GroupName</h3>
+    </div>
 
     <div class="messages-container">
 
@@ -14,25 +16,20 @@
             {
                 <div class="message-style text-break">
                     @message.Text
-
                     <small class="text-muted">6:58 pm</small>
                 </div>
                 <br />
             }
         </div>
 
-       
-           
-       <div class="d-flex action-container">
+        <div class="d-flex action-container">
             <input type="text" class="form-control text-area-style" placeholder="Write a message..." aria-label="Write a message..." aria-describedby="button-send" @bind="message">
             <button class="btn btn-outline-secondary" type="button" id="button-send" @onclick="SendMessage">
                 <img class="send-icon" src="icons/send-icon.png" />
             </button>
-       </div>
+        </div>
 
     </div>
-
-
 </body>
 
 @code {
@@ -89,7 +86,7 @@
                 GroupName,
                 message ?? "...Empty message...");
 
-                message = "";
+                message = null;
 
             await jsruntime.InvokeVoidAsync("scrollFunction");
         }
