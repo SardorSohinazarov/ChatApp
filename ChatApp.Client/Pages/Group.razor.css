@@ -2,6 +2,13 @@
     background-color: #282E33;
 }
 
+.group-head{
+    border-width: 1px;
+    border-color: black;
+    padding-bottom: 2px;
+    padding-top: 2px;
+}
+
 .group-page {
     height: calc(100vh - 100px);
     overflow-y: auto;
@@ -54,6 +61,12 @@
 .action-container {
     padding-bottom: 30px;
     background-color: #282E33;
+}
+
+.action-container input{
+    border-width: 1px;
+    border-color: black;
+    border-radius: 0;
 }
 
 ::-webkit-scrollbar {
